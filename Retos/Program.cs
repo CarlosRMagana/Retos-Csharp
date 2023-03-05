@@ -19,6 +19,8 @@ namespace Retos
             //leetSpeak();
             //passwordGenerator();
             //fibonacciPrimoPar();
+            //PiedraPapeloTijera();
+            //GenerateRandomNumber(0, 100);
 
             //PracticeOne();
             //PracticeTwo();
@@ -28,6 +30,7 @@ namespace Retos
             //distanciaHamming();
             //countWords();
             //stringToNumber();
+            //Heart();
 
             //prueba();
 
@@ -229,6 +232,108 @@ namespace Retos
 
         #endregion
 
+        #region Reto 5
+
+        /*
+        * Crea un programa que calcule quien gana más partidas al piedra,
+        * papel, tijera, lagarto, spock.
+        * - El resultado puede ser: "Player 1", "Player 2", "Tie" (empate)
+        * - La función recibe un listado que contiene pares, representando cada jugada.
+        * - El par puede contener combinaciones de "🗿" (piedra), "📄" (papel),
+        *   "✂️" (tijera), "🦎" (lagarto) o "🖖" (spock).
+        * - Ejemplo. Entrada: [("🗿","✂️"), ("✂️","🗿"), ("📄","✂️")]. Resultado: "Player 2".
+        * - Debes buscar información sobre cómo se juega con estas 5 posibilidades.
+        */
+
+        static void PiedraPapeloTijera()
+        {
+            var elements = new string[] { "rock", "paper", "scissors" };
+
+            var odds = new List<Tuple<string, string>>();
+
+            var move = new Random();
+
+            int playerOne = 0;
+            int playerTwo = 0;
+
+            int tie = 0;
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                string player1Choice = elements[move.Next(3)];
+                string player2Choice = elements[move.Next(3)];
+
+                odds.Add(new Tuple<string, string>(player1Choice, player2Choice));
+
+                bool playerOneWin = (player1Choice == "rock" && player2Choice == "scissors" ||
+                                     player1Choice == "paper" && player2Choice == "rock" ||
+                                     player1Choice == "scissors" && player2Choice == "paper");
+
+                bool playerTwoWin = (player2Choice == "rock" && player1Choice == "scissors" ||
+                                     player2Choice == "paper" && player1Choice == "rock" ||
+                                     player2Choice == "scissors" && player1Choice == "paper");
+
+                if (odds[i].Item1 == odds[i].Item2)
+                {
+                    tie++;
+                }
+                else if (playerOneWin)
+                {
+                    playerOne++;
+                }
+                else if (playerTwoWin)
+                {
+                    playerTwo++;
+                }
+            }
+
+            foreach (var round in odds)
+            {
+                Console.WriteLine(round);
+            }
+
+            if(playerTwo > playerOne)
+            {
+                Console.WriteLine("Player 2 wins!");
+            }
+            else if (playerOne < tie && tie > playerTwo)
+            {
+                Console.WriteLine("It's a tie!");
+            }
+            else
+            {
+                Console.WriteLine("Player 1 wins!");
+            }
+        }
+        #endregion
+
+        #region Reto 6
+        /*
+         * Crea un generador de números pseudoaleatorios entre 0 y 100.
+         * - No puedes usar ninguna función "random" (o semejante) del 
+         *   lenguaje de programación seleccionado.
+         *
+         * Es más complicado de lo que parece...
+         */
+
+        static void GenerateRandomNumber(int min, int max)
+        {
+            // Get the current time ticks as the seed value
+            long ticks = DateTime.Now.Ticks;
+
+            // Perform some arithmetic operations to generate a random number
+            int randomNumber = (int)(((ticks & 0xFFFF) * 16807) % int.MaxValue);
+
+            // Scale the random number to the desired range
+            double scalingFactor = 1.0 / int.MaxValue;
+            int scaledNumber = (int)((max - min + 1) * (randomNumber * scalingFactor)) + min;
+
+            // Return the random number
+            Console.WriteLine(scaledNumber);
+        }
+
+        #endregion
+
         #region Test 1
 
         /*Take the following string "Davis, Clyne, Fonte, Hooiveld, Shaw, Davis, Schneiderlin, Cork, Lallana, Rodriguez, Lambert" and give each player a shirt number, starting from 1, to create a string of the form: "1. Davis, 2. Clyne, 3. Fonte" etc.*/
@@ -249,12 +354,13 @@ namespace Retos
 
             //Answer
 
-            var output = String.Join(", ", "Davis, Clyne, Fonte, Hooiveld, Shaw, Davis, Schneiderlin, Cork, Lallana, Rodriguez, Lambert"
+            var outPut = String.Join(", ", "Davis, Clyne, Fonte, Hooiveld, Shaw, Davis, Schneiderlin, Cork, Lallana, Rodriguez, Lambert"
             .Split(',')
             .Select((item, index) => index + 1 + "." + item)
             .ToArray());
 
-            Console.WriteLine(output);
+            Console.WriteLine(outPut);
+
         }
 
 
@@ -364,6 +470,28 @@ namespace Retos
 
         #endregion
 
+        #region Test 8 
+
+        static void Heart()
+        {
+            float x, y, a;
+
+            for (y = 1.5f; y > -1f; y -= 0.1f)
+            {
+                for (x = -1.5f; x < 1.5f; x += 0.05f)
+                {
+                    a = x * x + y * y - 1f;
+                    Console.Write(a * a * a - x * x * y * y * y <= 0.0f ? '*' : ' ');
+                }
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine();
+            }
+            Console.ReadLine();
+
+        }
+
+        #endregion
+
         #region Pasantia
         static void prueba()
         {
@@ -399,6 +527,7 @@ namespace Retos
 
         }
         #endregion
+
     }
 
 
