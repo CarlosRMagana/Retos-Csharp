@@ -21,6 +21,7 @@ namespace Retos
             //fibonacciPrimoPar();
             //PiedraPapeloTijera();
             //GenerateRandomNumber(0, 100);
+            //DetectarTipoDePalabra();
 
             //PracticeOne();
             //PracticeTwo();
@@ -330,6 +331,73 @@ namespace Retos
 
             // Return the random number
             Console.WriteLine(scaledNumber);
+        }
+
+        #endregion
+
+        #region Reto 7
+
+        /*
+         * Crea 3 funciones, cada una encargada de detectar si una cadena de
+         * texto es un heterograma, un isograma o un pangrama.
+         * - Debes buscar la definición de cada uno de estos términos.
+         * 
+         * Heterograma: es una palabra o frase que NO contiene ninguna letra repetida.
+         * Isograma: es una palabra o frase en la que cada letra aparece el mismo número de veces.
+         * Pangrama: es una frase en la que aparecen todas las letras del abecedario.
+         */
+
+        static void DetectarTipoDePalabra()
+        {
+            string input = Console.ReadLine();
+
+            var user = Regex.Replace(input, @"\s+", "")
+                                .ToCharArray()
+                                .ToList();
+
+            bool esHeterograma = Heterograma(user).Count() == 0;
+            bool esPangrama = Pangrama(user);
+
+            if (esHeterograma)
+            {
+                Console.WriteLine($"\nLa palabra {input} es un heterograma.");
+            }
+            else if (Heterograma(user).Count() > 0)
+            {
+                Console.WriteLine($"\nLa palabra {input} es un isograma.");
+            }
+            else if (esPangrama)
+            {
+                Console.WriteLine($"\nLa palabra {input} es un pangrama.");
+            }
+            else
+            {
+                Console.WriteLine($"\nLa palabra {input} no es ni un heterograma, ni un isograma, ni un pangrama.");
+            }
+
+        }
+
+        static IEnumerable<char> Heterograma(IEnumerable<char> input)
+        {
+            var result = input.GroupBy(c => c)
+                             .Where(g => g.Count() > 1)
+                             .Select(g => g.Key);
+
+            return result;
+        }
+
+        static bool Pangrama(IEnumerable<char> input)
+        {
+            var alfabeto = Enumerable.Range('a', 26)
+                                      .Select(c => (char)c)
+                                      .ToList();
+
+            var user = input.Select(c => Char.ToLower(c)).ToList();
+
+            var result = alfabeto.Except(user)
+                                 .Count() == 0;
+
+            return result;
         }
 
         #endregion
