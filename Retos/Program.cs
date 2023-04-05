@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Retos.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -22,6 +25,8 @@ namespace Retos
             //PiedraPapeloTijera();
             //GenerateRandomNumber(0, 100);
             //DetectarTipoDePalabra();
+            //ConsumeYuGiOhApi();
+            ExtractValuesURL();
 
             //PracticeOne();
             //PracticeTwo();
@@ -400,6 +405,81 @@ namespace Retos
             return result;
         }
 
+        #endregion
+
+        #region Reto 8
+
+        /*
+         * Llamar a una API es una de las tareas más comunes en programación.
+         *
+         * Implementa una llamada HTTP a una API (la que tú quieras) y muestra su
+         * resultado a través de la terminal. Por ejemplo: Pokémon, Marvel...
+         *
+         * Aquí tienes un listado de posibles APIs: 
+         * https://github.com/public-apis/public-apis
+         */
+
+        static async Task ConsumeYuGiOhApi()
+        {
+            HttpClient client = new HttpClient()
+            {
+                BaseAddress = new Uri("https://db.ygoprodeck.com/api/v7/"),
+            };
+            string url = "cardinfo.php";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            // Deserializa la respuesta JSON en un objeto C#
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var root = JsonSerializer.Deserialize<Rootobject>(responseString, options);
+
+            // Generamos un numero cualquiera para que nos devuelva una coleccion de diferentes items, en este caso son 6 elementos diferentes.
+            Random random = new Random();
+
+            for(int i = 0; i < 6; i++)
+            {
+                // Accede a las propiedades del objeto para obtener los valores deseados
+                var cardSelected = random.Next(0, 150);
+                int id = root.data[cardSelected].id;
+                string name = root.data[cardSelected].name;
+                string type = root.data[cardSelected].type;
+
+                // Muestra los valores obtenidos en la consola
+                Console.WriteLine($"ID: {id}");
+                Console.WriteLine($"Name: {name}");
+                Console.WriteLine($"Type: {type}");
+                Console.WriteLine("\n");
+            }
+        }
+
+        #endregion
+
+        #region Reto 9
+        /*
+         * Dada una URL con parámetros, crea una función que obtenga sus valores.
+         * No se pueden usar operaciones del lenguaje que realicen esta tarea directamente.
+         *
+         * Ejemplo: En la url https://retosdeprogramacion.com?year=2023&challenge=0
+         * los parámetros serían ["2023", "0"]
+         */
+
+        static void ExtractValuesURL()
+        {
+            var url = "https://retosdeprogramacion.com?year=2023&challenge=0";
+
+            string pattern = @"[?&](\w+)=(\w+)";
+
+            MatchCollection matches = Regex.Matches(url, pattern);
+
+            foreach (Match match in matches)
+            {
+                Console.WriteLine("Parámetro: {0}, Valor: {1}", match.Groups[1].Value, match.Groups[2].Value);
+            }
+        }
         #endregion
 
         #region Test 1
